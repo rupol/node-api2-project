@@ -70,6 +70,33 @@ router.get("/:id", (req, res) => {
 
 // DELETE	/api/posts/:id
 // Removes the post with the specified id and returns the deleted post object. You may need to make additional calls to the database in order to satisfy this requirement.
+router.delete("/:id", (req, res) => {
+  posts
+    .findById(req.params.id)
+    .then(post => {
+      if (post && post.length) {
+        posts
+          .remove(req.params.id)
+          .then(count => {
+            res.status(200).json(post);
+          })
+          .catch(err => {
+            res.status(500).json({
+              error: "The post could not be removed"
+            });
+          });
+      } else {
+        res
+          .status(404)
+          .json({ message: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "The post information could not be retrieved."
+      });
+    });
+});
 
 // PUT	/api/posts/:id
 // Updates the post with the specified id using data from the request body. Returns the modified document, NOT the original.
@@ -88,8 +115,8 @@ router.put("/:id", (req, res) => {
 
   posts
     .update(req.params.id, newPost)
-    .then(res => {
-      if (res) {
+    .then(count => {
+      if (count > 0) {
         res.status(200).json(newPost);
       } else {
         res
@@ -98,6 +125,7 @@ router.put("/:id", (req, res) => {
       }
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
         error: "There was an error while saving the post to the database"
       });
