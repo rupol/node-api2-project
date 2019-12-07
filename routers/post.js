@@ -73,8 +73,35 @@ router.get("/:id", (req, res) => {
 
 // PUT	/api/posts/:id
 // Updates the post with the specified id using data from the request body. Returns the modified document, NOT the original.
-// router.put("/:id", (req, res) => {
-//   if(!req.body.title ||)
-// })
+router.put("/:id", (req, res) => {
+  const { title, contents } = req.body;
+  if (!title || !contents) {
+    return res.status(400).json({
+      errorMessage: "Please provide title and contents for the post."
+    });
+  }
+
+  const newPost = {
+    title: title,
+    contents: contents
+  };
+
+  posts
+    .update(req.params.id, newPost)
+    .then(res => {
+      if (res) {
+        res.status(200).json(newPost);
+      } else {
+        res
+          .status(404)
+          .json({ message: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "There was an error while saving the post to the database"
+      });
+    });
+});
 
 module.exports = router;
