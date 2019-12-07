@@ -23,7 +23,7 @@ router.post("/", (req, res) => {
     .insertComment(newComment)
     .then(id => {
       if (id) {
-        res.status(201).json(id);
+        res.status(201).json(newComment);
       } else {
         res
           .status(404)

@@ -22,10 +22,11 @@ router.post("/", (req, res) => {
 
   posts
     .insert(newPost)
-    .then(res => {
-      res.status(201).json(res);
+    .then(id => {
+      res.status(201).json(newPost);
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
         error: "There was an error while saving the post to the database"
       });
@@ -41,6 +42,7 @@ router.get("/", (req, res) => {
       res.status(200).json(posts);
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
         error: "The posts information could not be retrieved."
       });
@@ -62,6 +64,7 @@ router.get("/:id", (req, res) => {
       }
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
         error: "The post information could not be retrieved."
       });
@@ -78,9 +81,10 @@ router.delete("/:id", (req, res) => {
         posts
           .remove(req.params.id)
           .then(count => {
-            res.status(200).json(post);
+            res.status(200).json({ deleted: post });
           })
           .catch(err => {
+            console.log(err);
             res.status(500).json({
               error: "The post could not be removed"
             });
@@ -92,6 +96,7 @@ router.delete("/:id", (req, res) => {
       }
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({
         error: "The post information could not be retrieved."
       });
